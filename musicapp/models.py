@@ -2,22 +2,24 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
-class Song(models.Model):
+class Language(models.Model):
+    code = models.CharField(max_length=10)
+    name = models.CharField(max_length=200)
 
-    Language_Choice = (
-        ("Swahili", "Swahili"),
-        ("Sheng'", "Sheng'"),
-        ("English", "English"),
-    )
+    @classmethod
+    def get_language_choices(cls):
+        return [(language.code, language.name) for language in cls.objects.all()]
+
+
+class Song(models.Model):
 
     name = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
-    language = models.CharField(max_length=20, choices=Language_Choice, default="Hindi")
     year = models.IntegerField()
     singer = models.CharField(max_length=200)
     song_img = models.FileField()
     song_file = models.FileField()
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

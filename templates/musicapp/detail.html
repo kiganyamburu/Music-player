@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load socialaccount %}
 {% block title %} Detail {% endblock title %}
 {% block header %}
 <style>
@@ -14,7 +13,7 @@
 {% if messages %}
 <ul class="messages" style="width: 600px;margin-left:400px">
     {% for message in messages %}
-    <div class="alert alert-success">
+    <div class="alert alert-success bg-dark">
         <strong>Success!</strong> {{message}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -25,9 +24,9 @@
 {% endif %}
 <br>
 <div class="container">
-    <div class="card">
+    <div class="card" style="border: 0px;">
         <div class="container-fliud">
-            <div class="wrapper row">
+            <div class="wrapper row" style="background-color: #343A40 !important;"> 
                 <div class="preview col-md-5">
 
                     <div class="preview-pic tab-content">
@@ -123,7 +122,7 @@
 
 {% if last_played %}
 <footer class="footer">
-    <div class="player" style="padding-left: 10px;padding-top:10px;background-color: #FFA500;">
+    <div class="player" style="padding-left: 10px;padding-top:10px;background-color: #ff0051;">
         <div class="left"><img src="{{last_played.song_img.url}}" height="90" width="90"
                 style="border-radius: 10px 10px 10px 10px;"></div>
         <div class="right">

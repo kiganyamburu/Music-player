@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load socialaccount %}
 {% block title %} MusicApp - Home {% endblock title %}
 
 <head>
@@ -16,7 +15,7 @@
 </style>
 <br>
 
-<div class="container p-3 my-3 bg-primary text-white">
+<div class="container rounded p-3 my-3 bg-primary text-white">
     <a href="{% url 'playlist' %}">
         <h1 style="color: antiquewhite;">Playlist</h1>
     </a>
@@ -24,7 +23,7 @@
         <p style="color: antiquewhite;">Browse through your created playlist here.</p>
     </a>
 </div>
-<div class="container p-3 my-3 bg-primary text-white">
+<div class="container rounded p-3 my-3 bg-primary text-white">
     <a href="{% url 'favourite' %}">
         <h1 style="color: antiquewhite;">Favourites</h1>
     </a>

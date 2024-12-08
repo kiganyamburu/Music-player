@@ -81,32 +81,9 @@ def index(request):
     return render(request, "musicapp/index.html", context=context)
 
 
-def hindi_songs(request):
-
-    hindi_songs = Song.objects.filter(language="Hindi")
-
-    # Last played song
-    last_played_list = list(Recent.objects.values("song_id").order_by("-id"))
-    if last_played_list:
-        last_played_id = last_played_list[0]["song_id"]
-        last_played_song = Song.objects.get(id=last_played_id)
-    else:
-        last_played_song = None
-
-    query = request.GET.get("q")
-
-    if query:
-        hindi_songs = Song.objects.filter(Q(name__icontains=query)).distinct()
-        context = {"hindi_songs": hindi_songs}
-        return render(request, "musicapp/hindi_songs.html", context)
-
-    context = {"hindi_songs": hindi_songs, "last_played": last_played_song}
-    return render(request, "musicapp/hindi_songs.html", context=context)
-
-
-def english_songs(request):
-
-    english_songs = Song.objects.filter(language="English")
+@login_required(login_url="login")
+def language_songs(request, language):
+    songs = Song.objects.filter(language=language)
 
     # Last played song
     last_played_list = list(Recent.objects.values("song_id").order_by("-id"))
@@ -119,12 +96,12 @@ def english_songs(request):
     query = request.GET.get("q")
 
     if query:
-        english_songs = Song.objects.filter(Q(name__icontains=query)).distinct()
-        context = {"english_songs": english_songs}
-        return render(request, "musicapp/english_songs.html", context)
+        songs = Song.objects.filter(Q(name__icontains=query)).distinct()
+        context = {"songs": songs}
+        return render(request, "musicapp/all_songs.html", context)
 
-    context = {"english_songs": english_songs, "last_played": last_played_song}
-    return render(request, "musicapp/english_songs.html", context=context)
+    context = {"songs": songs, "last_played": last_played_song}
+    return render(request, "musicapp/all_songs.html", context=context)
 
 
 @login_required(login_url="login")
