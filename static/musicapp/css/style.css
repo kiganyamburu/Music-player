@@ -1,0 +1,8 @@
+.bg-primary {
+    background-color: #FFA500 !important;
+}
+
+.btn-primary {
+    background-color: #FFA500 !important;
+    border-color: hsl(39, 100%, 43%) !important;
+}

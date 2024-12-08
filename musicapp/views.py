@@ -189,7 +189,7 @@ def all_songs(request):
 
     context = {
         'songs': songs,
-        'last_played':last_played_song,
+        # 'last_played':last_played_song,
         'first_time':first_time,
         'all_singers': all_singers,
         'all_languages': all_languages,
