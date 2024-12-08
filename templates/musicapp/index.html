@@ -152,6 +152,7 @@
 <br>
 <br>
 
+{% if last_played %}
 <footer class="footer">
     <div class="player" style="padding-left: 10px;padding-top:10px;background-color: #FFA500;">
       <div class="left"><img src="{{last_played.song_img.url}}" height="90" width="90" style="border-radius: 10px 10px 10px 10px;"></div>
@@ -170,5 +171,7 @@
       </div>
     </div>
 </footer>
+{% endif %}
+
 
 {% endblock body %}
