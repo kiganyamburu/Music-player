@@ -89,17 +89,18 @@
 <br>
 
 
-<!-- Hindi Songs -->
+<!-- Songs by Language-->
+{% for language, songs in language_songs.items %}
 {% if not query_search %}
   <header class="section-heading">
-    <h5 class="section-title">HINDI SONGS</h5>
+    <h5 class="section-title">{{ language|upper }} SONGS</h5>
   </header>
 <hr>
 {% endif %}
 <!-- Song list -->
 <div class="row" style="margin-right: 65px;margin-left:-15px">
-  {% if hindi_songs %}
-  {% for song in hindi_songs %}
+  {% if songs %}
+  {% for song in songs %}
       <div class="col-md-2">
           <div class="hovereffect">
             <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135" style="border-radius: 8px 8px 8px 8px;">
@@ -112,44 +113,22 @@
       {% endfor %}
       {% endif %}
       {% if not query_search %}
-      <a href="{% url 'hindi_songs' %}" class="btn btn-primary float-right" style="height: 135px;"><center style="margin-top: 45px;">View all <i class="fa fa-arrow-right" aria-hidden="true"></i></center></a>
+      <a href="{% url 'language_songs' language %}" class="btn btn-primary float-right" style="height: 135px;">
+        <center style="margin-top: 45px;">View all <i class="fa fa-arrow-right" aria-hidden="true"></i></center>
+      </a>
       {% endif %}
 </div>
+<br>
+<br>
+{% endfor %}
+
+
+<br>
 <br>
 <br>
 
-<!-- English Songs -->
-{% if not query_search %}
-  <header class="section-heading">
-    <h5 class="section-title">ENGLISH SONGS</h5>
-  </header>
-<hr>
-{% endif %}
-<!-- Song list -->
-<div class="row" style="margin-right: 65px;margin-left:-15px">
-  {% if english_songs %}
-  {% for song in english_songs %}
-      <div class="col-md-2">
-          <div class="hovereffect">
-            <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135" style="border-radius: 8px 8px 8px 8px;">
-            <div class="overlay">
-                <a class="btn btn-outline-dark mt-5 mx-1" href="{% url 'play_song_index' song.id %}"><i class="fa fa-play" aria-hidden="true"></i></a>
-                <a class="btn btn-outline-dark mt-5 mx-1" href="{% url 'detail' song.id %}"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
-             </div>
-          </div>
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% if not query_search %}
-      <a href="{% url 'english_songs' %}" class="btn btn-primary float-right" style="height: 135px;"><center style="margin-top: 45px;">View all <i class="fa fa-arrow-right" aria-hidden="true"></i></center></a>
-      {% endif %}
-    </div>
+
 </div>
-<br>
-<br>
-<br>
-<br>
-<br>
 
 {% if last_played %}
 <footer class="footer">

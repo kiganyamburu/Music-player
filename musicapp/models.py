@@ -3,12 +3,14 @@ from django.contrib.auth.models import User
 
 
 class Language(models.Model):
-    code = models.CharField(max_length=10)
     name = models.CharField(max_length=200)
 
     @classmethod
-    def get_language_choices(cls):
-        return [(language.code, language.name) for language in cls.objects.all()]
+    def get_languages(cls):
+        return [language.name for language in cls.objects.all()]
+
+    def __str__(self):
+        return self.name
 
 
 class Song(models.Model):
@@ -17,8 +19,8 @@ class Song(models.Model):
     album = models.CharField(max_length=200)
     year = models.IntegerField()
     singer = models.CharField(max_length=200)
-    song_img = models.FileField()
-    song_file = models.FileField()
+    song_img = models.FileField(upload_to="song_img/")
+    song_file = models.FileField(upload_to="song_file/")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
 
     def __str__(self):

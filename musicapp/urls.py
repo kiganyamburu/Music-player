@@ -4,8 +4,8 @@ from . import views
 # Add URLConf
 urlpatterns = [
     path("", views.index, name="index"),
-    path("<int:song_id>/", views.detail, name="detail"),
-    path("<str:language_songs>/", views.language_songs, name="detail"),
+    path("song/<int:song_id>/", views.detail, name="detail"),
+    path("language/<str:language>/", views.language_songs, name="language_songs"),
     path("mymusic/", views.mymusic, name="mymusic"),
     path("playlist/", views.playlist, name="playlist"),
     path("playlist/<str:playlist_name>/", views.playlist_songs, name="playlist_songs"),

@@ -1,3 +1,6 @@
+from curses.ascii import HT
+from email.policy import HTTP
+from django.http import HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.db.models import Q
@@ -44,20 +47,22 @@ def index(request):
     # Display all songs
     songs = Song.objects.all()
 
+    # Display songs grouped by language
+    def get_language_songs():
+        languages = Language.get_languages()
+        language_songs = {}
+        for language in languages:
+            language_songs[language] = list(
+                Song.objects.filter(language=Language.objects.get(name=language))
+            )
+        print(f"language_songs: {language_songs}")
+
+        return language_songs
+
     # Display few songs on home page
     songs_all = list(Song.objects.all().values("id").order_by("?"))
     sliced_ids = [each["id"] for each in songs_all][:5]
     indexpage_songs = Song.objects.filter(id__in=sliced_ids)
-
-    # Display Hindi Songs
-    songs_hindi = list(Song.objects.filter(language="Hindi").values("id"))
-    sliced_ids = [each["id"] for each in songs_hindi][:5]
-    indexpage_hindi_songs = Song.objects.filter(id__in=sliced_ids)
-
-    # Display English Songs
-    songs_english = list(Song.objects.filter(language="English").values("id"))
-    sliced_ids = [each["id"] for each in songs_english][:5]
-    indexpage_english_songs = Song.objects.filter(id__in=sliced_ids)
 
     if len(request.GET) > 0:
         search_query = request.GET.get("q")
@@ -72,9 +77,8 @@ def index(request):
     context = {
         "all_songs": indexpage_songs,
         "recent_songs": recent_songs,
-        "hindi_songs": indexpage_hindi_songs,
-        "english_songs": indexpage_english_songs,
         "last_played": last_played_song,
+        "language_songs": get_language_songs(),
         "first_time": first_time,
         "query_search": False,
     }
@@ -83,25 +87,17 @@ def index(request):
 
 @login_required(login_url="login")
 def language_songs(request, language):
-    songs = Song.objects.filter(language=language)
-
-    # Last played song
-    last_played_list = list(Recent.objects.values("song_id").order_by("-id"))
-    if last_played_list:
-        last_played_id = last_played_list[0]["song_id"]
-        last_played_song = Song.objects.get(id=last_played_id)
-    else:
-        last_played_song = None
+    songs = Song.objects.filter(language=Language.objects.get(name=language))
 
     query = request.GET.get("q")
 
     if query:
         songs = Song.objects.filter(Q(name__icontains=query)).distinct()
         context = {"songs": songs}
-        return render(request, "musicapp/all_songs.html", context)
+        return render(request, "musicapp/language_songs.html", context)
 
-    context = {"songs": songs, "last_played": last_played_song}
-    return render(request, "musicapp/all_songs.html", context=context)
+    context = {"songs": songs}
+    return render(request, "musicapp/language_songs.html", context=context)
 
 
 @login_required(login_url="login")
@@ -140,7 +136,7 @@ def play_recent_song(request, song_id):
     return redirect("recent")
 
 
-def all_songs(request):
+def all_songs(request: HttpRequest):
     songs = Song.objects.all()
 
     first_time = False
@@ -160,10 +156,7 @@ def all_songs(request):
     qs_singers = Song.objects.values_list("singer").all()
     s_list = [s.split(",") for singer in qs_singers for s in singer]
     all_singers = sorted(list(set([s.strip() for singer in s_list for s in singer])))
-    qs_languages = Song.objects.values_list("language").all()
-    all_languages = sorted(
-        list(set([l.strip() for lang in qs_languages for l in lang]))
-    )
+    all_languages = Language.get_languages()
 
     if len(request.GET) > 0:
         search_query = request.GET.get("q")

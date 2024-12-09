@@ -13,7 +13,7 @@
 {% if messages %}
 <ul class="messages" style="width: 600px;margin-left:400px">
     {% for message in messages %}
-    <div class="alert alert-success bg-dark">
+    <div class="alert alert-success">
         <strong>Success!</strong> {{message}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -46,14 +46,14 @@
                         <source src="{{ songs.song_file.url }}" type="audio/mpeg">
                     </audio>   -->
 
-                    <form method="post">
+                    <form   method="post">
                         {% csrf_token %}
                         <button style="float: left;" type="button" class="btn btn-primary" data-toggle="modal"
                             data-target="#exampleModal" data-whatever="@mdo"><i class="fa fa-plus" aria-hidden="true"></i> Create New Playlist</button>
                         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
+                            <div class="modal-dialog bg-dark" role="document">
+                                <div class="modal-content bg-dark">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">New Playlist</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -64,8 +64,8 @@
                                         <form>
                                             <div class="form-group">
                                                 <label for="recipient-name" class="col-form-label">Name</label>
-                                                <input type="text" class="form-control" id="recipient-name"
-                                                    name="playlist">
+                                                <input type="text" class="form-control bg-dark" id="recipient-name"
+                                                    name="playlist" placeholder="Playlist Name">
                                             </div>
                                         </form>
                                     </div>
@@ -81,7 +81,7 @@
 
                     <form method="post">
                         {% csrf_token %}
-                        <select style="margin-left: 10px;width: 170px;" class="btn btn-success"
+                        <select style="margin-left: 10px;width: 170px;" class="btn btn-success bg-dark"
                             onChange="form.submit();" name="playlist">
                             <option selected="selected" disabled style="color: black;">Add to Playlist</option>
                             {% if playlists %}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Hindi Songs {% endblock title %}
+{% block title %} {{ language|title }} Songs {% endblock title %}
 
 {% block body %}
 
@@ -21,16 +21,18 @@
   </div>
 </div>
 
+
+
 <!-- Language Songs -->
 <div class="container" style="margin-bottom: 20px;">
   <header class="section-heading">
-    <h5 class="section-title">HINDI SONGS</h5>
+    <h5 class="section-title">{{ language|upper }} SONGS</h5>
   </header>
   <hr>
   <!-- Song list -->
   <div class="row" style="margin-right: 65px;margin-left:-15px;">
-    {% if hindi_songs %}
-    {% for song in language_songs %}
+    {% if songs %}
+    {% for song in songs %}
     <div class="col-sm-2 col-md-2" style="padding-bottom: 15px;">
       <div class="hovereffect">
         <img src="{{ song.song_img.url}}" class="img-responsive" height="135" width="135"
