@@ -2,7 +2,8 @@
 
 * {
     font-family: 'Poppins', sans-serif;
-    color: #f5f5f5 !important;
+    /* color: #f5f5f5 !important; */
+    color: black !important;
 }
 
 select,
