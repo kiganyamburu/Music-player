@@ -17,11 +17,9 @@ def login_request(request):
         user = authenticate(request, username=username, password=password)
 
         login(request, user)
-        # messages.info(request, f"You are now logged in  as {user}")
         return redirect('index')
     else:
         print(form.errors)
-        # messages.error(request, 'Username or Password is Incorrect! ')
     return render(request, 'authentication/login.html', context=context)
 
 
@@ -31,12 +29,27 @@ def signup_request(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password1")
+            user = authenticate(
+                request,
+                username=username,
+                password=password,
+            )
+            login(request, user)
+            return redirect("index")
     else:
         form = RegistrationForm()
 
-    context = {'form': form, 'title': title}
-    return render(request, 'authentication/signup.html', context=context)
+    context = {
+        "form": form,
+        "title": title,
+    }
+    return render(
+        request,
+        "authentication/signup.html",
+        context=context,
+    )
 
 
 def logout_request(request):

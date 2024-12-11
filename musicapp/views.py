@@ -1,6 +1,6 @@
 from curses.ascii import HT
 from email.policy import HTTP
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.db.models import Q
@@ -55,7 +55,6 @@ def index(request):
             language_songs[language] = list(
                 Song.objects.filter(language=Language.objects.get(name=language))
             )
-        print(f"language_songs: {language_songs}")
 
         return language_songs
 
@@ -76,6 +75,7 @@ def index(request):
 
     context = {
         "all_songs": indexpage_songs,
+        "all_languages": Language.get_languages(),
         "recent_songs": recent_songs,
         "last_played": last_played_song,
         "language_songs": get_language_songs(),
@@ -96,7 +96,10 @@ def language_songs(request, language):
         context = {"songs": songs}
         return render(request, "musicapp/language_songs.html", context)
 
-    context = {"songs": songs}
+    context = {
+        "songs": songs,
+        "all_languages": Language.get_languages(),
+    }
     return render(request, "musicapp/language_songs.html", context=context)
 
 
@@ -136,10 +139,12 @@ def play_recent_song(request, song_id):
     return redirect("recent")
 
 
+@login_required(login_url="login")
 def all_songs(request: HttpRequest):
     songs = Song.objects.all()
 
     first_time = False
+    last_played_song = None
     # Last played song
     if not request.user.is_anonymous:
         last_played_list = list(
@@ -150,7 +155,6 @@ def all_songs(request: HttpRequest):
             last_played_song = Song.objects.get(id=last_played_id)
     else:
         first_time = True
-        last_played_song = None
 
     # apply search filters
     qs_singers = Song.objects.values_list("singer").all()
@@ -188,6 +192,7 @@ def all_songs(request: HttpRequest):
     return render(request, "musicapp/all_songs.html", context=context)
 
 
+@login_required(login_url="login")
 def recent(request):
 
     # Last played song
@@ -229,6 +234,7 @@ def recent(request):
         "recent_songs": recent_songs,
         "last_played": last_played_song,
         "query_search": False,
+        "all_languages": Language.get_languages(),
     }
     return render(request, "musicapp/recent.html", context=context)
 
@@ -270,7 +276,6 @@ def detail(request, song_id):
         elif "add-fav" in request.POST:
             is_fav = True
             query = Favourite(user=request.user, song=songs, is_fav=is_fav)
-            print(f"query: {query}")
             query.save()
             messages.success(request, "Added to favorite!")
             return redirect("detail", song_id=song_id)
@@ -279,9 +284,6 @@ def detail(request, song_id):
             query = Favourite.objects.filter(
                 user=request.user, song=songs, is_fav=is_fav
             )
-            print(f"user: {request.user}")
-            print(f"song: {songs.id} - {songs}")
-            print(f"query: {query}")
             query.delete()
             messages.success(request, "Removed from favorite!")
             return redirect("detail", song_id=song_id)
@@ -291,14 +293,23 @@ def detail(request, song_id):
         "playlists": playlists,
         "is_favourite": is_favourite,
         "last_played": last_played_song,
+        "all_languages": Language.get_languages(),
     }
     return render(request, "musicapp/detail.html", context=context)
 
 
+@login_required(login_url="login")
 def mymusic(request):
-    return render(request, "musicapp/mymusic.html")
+    return render(
+        request,
+        "musicapp/mymusic.html",
+        context={
+            "all_languages": Language.get_languages(),
+        },
+    )
 
 
+@login_required(login_url="login")
 def playlist(request):
     playlists = (
         Playlist.objects.filter(user=request.user).values("playlist_name").distinct
@@ -307,6 +318,7 @@ def playlist(request):
     return render(request, "musicapp/playlist.html", context=context)
 
 
+@login_required(login_url="login")
 def playlist_songs(request, playlist_name):
     songs = Song.objects.filter(
         playlist__playlist_name=playlist_name, playlist__user=request.user
@@ -325,11 +337,11 @@ def playlist_songs(request, playlist_name):
     return render(request, "musicapp/playlist_songs.html", context=context)
 
 
+@login_required(login_url="login")
 def favourite(request):
     songs = Song.objects.filter(
         favourite__user=request.user, favourite__is_fav=True
     ).distinct()
-    print(f"songs: {songs}")
 
     if request.method == "POST":
         song_id = list(request.POST.keys())[1]
