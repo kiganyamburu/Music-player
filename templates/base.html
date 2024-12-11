@@ -50,8 +50,8 @@
             {% if request.user.is_active %}
             <h5 class="text-white mt-3 mx-2">
                 Hi
-                {% if request.user.first_name %}
-                 , {{ request.user.first_name }}
+                {% if request.user.username %}
+                 , {{ request.user.username }}
                 {% endif %} 
             </h5>
             <a href="{% url 'logout' %}" class="btn btn-dark mt-2 mx-2"> Sign Out <i class="fa fa-sign-out" aria-hidden="true"></i></a>
